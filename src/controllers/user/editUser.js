@@ -24,7 +24,7 @@ const updateUserDetails = async function (req, res) {
             return res.status(403).send({ status: false, message: "You Are Not Authorized!!" })
         }
 
-        let { name,password,email,username,Gender,mobile} = userDetails
+        let { name,password,email,user_name,gender,mobile} = userDetails
 
         
         if (!validator.isValidRequestBody(userDetails)) {
@@ -34,7 +34,7 @@ const updateUserDetails = async function (req, res) {
         if (!validator.validString(name)) {
             return res.status(400).send({ status: false, message: 'name is Required' })
         }
-        if (!validator.validString(Gender)) {
+        if (!validator.validString(gender)) {
             return res.status(400).send({ status: false, message: 'Gender is Required' })
         }
 
@@ -58,25 +58,25 @@ const updateUserDetails = async function (req, res) {
         }
 
         if (mobile) {
-            if (!(/^(\+\d{1,3}[- ]?)?\d{10}$/).test(userDetails.mobile))
+            if (!(/^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im).test(userDetails.mobile))
                 return res.status(400).send({ status: false, message: "Mobile number must be a valid Indian number." })
 
-            const checkPhoneFromDb = await userModel.findOne({ phone: userDetails.mobile })
+            const checkPhoneFromDb = await userModel.findOne({ mobile: userDetails.mobile })
 
             if (checkPhoneFromDb) {
                 return res.status(400).send({ status: false, message: `${userDetails.mobile} is already in use, Please try a new phone number.` })
             }
         }
 
-         if (!validator.validString(username)) {
+         if (!validator.validString(user_name)) {
             return res.status(400).send({ status: false, message: 'username is Required' })
         }
 
-        if (username) {
-            const checkUserNameFromDb = await userModel.findOne({ username: userDetails.username })
+        if (user_name) {
+            const checkUserNameFromDb = await userModel.findOne({ user_name: userDetails.user_name })
 
             if (checkUserNameFromDb) {
-                return res.status(400).send({ status: false, message: `${userDetails.username} is already in use.` })
+                return res.status(400).send({ status: false, message: `${userDetails.user_name} is already in use.` })
             }
         }
 
@@ -86,8 +86,8 @@ const updateUserDetails = async function (req, res) {
 
         if (password) {
 
-            if (!(password.length >= 8 && password.length <= 15)) {
-                return res.status(400).send({ status: false, message: "Password should be Valid min 8 and max 15 " })
+            if (!(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#$@!%&*?])[A-Za-z\d#$@!%&*?]{8,30}$/).test(password)) {
+                return res.status(400).send({ status: false, message: "Password minimum 8 char combinantion of small,capital special char " })
             }
             
         }

@@ -1,6 +1,11 @@
 const express=require('express')
+const route=require('./routers/route')
 const app=express()
 app.use(express.json());
+const { AppConfig } = require('aws-sdk');
+const multer=require('multer')
+app.use(multer().any())
+
 
 const mongoose = require("mongoose");
        
@@ -13,7 +18,7 @@ const mongoose = require("mongoose");
         console.log(err);
     })
 
-
+app.use('/',route)
 const port=process.env.PORT||8080;
 app.listen(port,()=>{
     console.log(`server running at port ${port}`)

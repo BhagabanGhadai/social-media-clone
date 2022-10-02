@@ -1,10 +1,17 @@
 const mongoose = require('mongoose');
 
+
 const { Schema } = mongoose;
 
 const PostSchema = new Schema({
+    userId:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'user',
+        required:true
+    },
     text: {
-        type: String
+        type: String,
+        required:true
     },
     video: {
         type: String
@@ -14,8 +21,21 @@ const PostSchema = new Schema({
     },
     HashTags: Array,
     friendTags: Array,
-    like: Array,
-    comment: Array
+    likes: Array,
+    comment: 
+        [{
+            userId:mongoose.Schema.Types.ObjectId,
+            commentBody:String
+        }]
+    ,
+    isDeleted:{
+        type:Boolean,
+        default:false
+    },
+    isPublic:{
+        type:Boolean,
+        default:true
+    }
 }, { timestamps: true });
 
 module.exports = mongoose.model('posts', PostSchema);
